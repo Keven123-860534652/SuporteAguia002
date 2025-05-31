@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suporte ÁGUIA 002 - Chat 24h</title>
+    <style>
+        :root {
+            --primary-color: #1a237e;
+            --secondary-color: #ffab00;
+            --whatsapp-color: #25D366;
+            --call-color: #006400;
+            --text-color: #333333;
+            --light-bg: #f5f5f5;
+            --warning-color: #ffcc00;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+        }
+        
+        .chat-container {
+            max-width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .chat-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            border-bottom: 3px solid var(--secondary-color);
+        }
+        
+        .chat-header img {
+            height: 30px;
+            margin-right: 10px;
+        }
+        
+        .chat-header h2 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        
+        .chat-header p {
+            margin: 0;
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 15px;
+            border-radius: 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .user-message {
+            background-color: var(--primary-color);
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .bot-message {
+            background-color: #ffffff;
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e0e0e0;
+        }
+        
+        .quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 10px;
+            gap: 8px;
+            border-top: 1px solid #eee;
+            background: white;
+        }
+        
+        .quick-action {
+            background-color: var(--secondary-color);
+            color: #000;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quick-action:hover {
+            background-color: #ffc400;
+        }
+        
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            background-color: white;
+            border-top: 1px solid #eee;
+        }
+        
+        #message-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            font-size: 0.9rem;
+        }
+        
+        #send-button {
+            background-color: var(--secondary-color);
+            color: #000;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin-left: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .typing-indicator {
+            color: #666;
+            font-style: italic;
+            padding: 5px 15px;
+            font-size: 0.8rem;
+            display: none;
+        }
+        
+        .contact-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 15px;
+            border-radius: 20px;
+            margin: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.8rem;
+            color: white;
+        }
+        
+        .whatsapp-btn {
+            background-color: var(--whatsapp-color);
+        }
+        
+        .call-btn {
+            background-color: var(--call-color);
+        }
+        
+        .contact-button i {
+            margin-right: 8px;
+        }
+        
+        .signature {
+            font-size: 0.7rem;
+            color: var(--primary-color);
+            text-align: right;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        .warning-box {
+            background-color: rgba(255, 204, 0, 0.1);
+            border-left: 3px solid var(--warning-color);
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .disclaimer {
+            font-size: 0.7rem;
+            text-align: center;
+            padding: 5px;
+            color: #666;
+            font-style: italic;
+            background-color: #f5f5f5;
+        }
+        
+        .price-tag {
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            padding: 8px 12px;
+            margin: 5px 0;
+            display: inline-block;
+            font-size: 0.8rem;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <im src="aguia-icon.png" alt="ÁGUIA 002">
+            <div>
+                <h2>🦅Suporte ÁGUIA 002</h2>
+                <p>Atendimento 24h - Kevin Hacker</p>
+            </div>
+        </div>
+        
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot-message">
+                Olá! Sou o assistente do ÁGUIA 002. Como posso te ajudar hoje?
+                <div class="signature">— Kevin Hacker</div>
+                
+                <div class="warning-box">
+                    <strong>AVISO IMPORTANTE:</strong> O jogo Aviator é bastante viciante. Respeite sempre a proteção e não seja ganancioso. Não existe bot 100% infalível.
+                </div>
+                
+                <a href="https://wa.me/258833152264" class="contact-button whatsapp-btn" target="_blank">
+                    <i class="fab fa-whatsapp"></i> WhatsApp do Admin
+                </a>
+                <a href="tel:+258860534652" class="contact-button call-btn">
+                    <i class="fas fa-phone"></i> Ligar para Suporte
+                </a>
+            </div>
+        </div>
+        
+        <div class="quick-actions">
+            <button class="quick-action" onclick="quickResponse('criar conta')">Como criar conta</button>
+            <button class="quick-action" onclick="quickResponse('key ativacao')">Key de ativação</button>
+            <button class="quick-action" onclick="quickResponse('precos')">Preços das Keys</button>
+            <button class="quick-action" onclick="quickResponse('funcionamento')">Como funciona</button>
+        </div>
+        
+        <div class="typing-indicator" id="typing-indicator">
+            Kevin Hacker está digitando...
+        </div>
+        
+        <div class="chat-input">
+            <input type="text" id="message-input" placeholder="Digite sua mensagem..." autofocus>
+            <button id="send-button">▶</button>
+        </div>
+        
+        <div class="disclaimer">
+            ÁGUIA 002 - Controle do jogo Aviator | Não existem vagas para revendedores atualmente
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const messageInput = document.getElementById('message-input');
+            const sendButton = document.getElementById('send-button');
+            const chatMessages = document.getElementById('chat-messages');
+            const typingIndicator = document.getElementById('typing-indicator');
+            
+            // Respostas baseadas no ÁGUIA 002
+            const responses = {
+                'criar conta': `Para criar conta no ÁGUIA 002:
+1. Clique em "CRIAR CONTA"
+2. Preencha seu email e senha
+3. Insira a KEY de ativação (fornecida pelo administrador)
+4. Clique em "CRIAR CONTA"
+
+<strong>Sem KEY válida não é possível criar a conta.</strong>`,
+                'key ativacao': `As KEYs de ativação podem ser:
+- <strong>KEY FREE</strong>: Liberada pelo administrador para grupos
+- <strong>KEY PAGA</strong>: Disponível para compra
+
+<div class="price-tag">350MT/3DIAS (Moçambique)</div>
+<div class="price-tag">7000KZ/3DIAS (Angola)</div>
+
+Para adquirir, entre em contato com o administrador.`,
+                'precos': `Preços das KEYs ÁGUIA 002:
+<div class="price-tag">350MT - Válida por 3 dias (Moçambique)</div>
+<div class="price-tag">7000KZ - Válida por 3 dias (Angola)</div>
+
+<strong>Não existem vagas para revendedores atualmente.</strong> Aguarde a próxima versão ÁGUIA 003.`,
+                'funcionamento': `O ÁGUIA 002 controla o jogo Aviator mostrando:
+- <strong>Crash</strong> e proteção para sacar na primeira casa
+- Gráfico do mercado em porcentagem (%)
+  → 50% pra cima: mercado está pagando
+  → 49% pra baixo: mercado está recolhendo
+
+<strong>DICA:</strong> Quando o gráfico está abaixo de 50%, reduza as apostas!`,
+                'default': `Obrigado por usar o ÁGUIA 002. Para mais informações sobre:
+- Criação de contas
+- KEYs de ativação
+- Funcionamento do sistema
+
+Use os botões rápidos ou entre em contato diretamente com nosso suporte.`
+            };
+            
+            // Enviar mensagem
+            function sendMessage() {
+                const messageText = messageInput.value.trim();
+                if (messageText === '') return;
+                
+                addMessage(messageText, 'user');
+                messageInput.value = '';
+                
+                showTyping();
+                
+                setTimeout(function() {
+                    hideTyping();
+                    let responseKey = 'default';
+                    const lowerText = messageText.toLowerCase();
+                    
+                    if (lowerText.includes('criar') || lowerText.includes('conta') || lowerText.includes('regist')) {
+                        responseKey = 'criar conta';
+                    } else if (lowerText.includes('key') || lowerText.includes('chave') || lowerText.includes('ativ')) {
+                        responseKey = 'key ativacao';
+                    } else if (lowerText.includes('preço') || lowerText.includes('valor') || lowerText.includes('mt') || lowerText.includes('kz')) {
+                        responseKey = 'precos';
+                    } else if (lowerText.includes('funcion') || lowerText.includes('aviator') || lowerText.includes('como usar')) {
+                        responseKey = 'funcionamento';
+                    } else if (lowerText.includes('whatsapp') || lowerText.includes('contato') || lowerText.includes('falar')) {
+                        sendContactOptions();
+                        return;
+                    }
+                    
+                    sendBotResponse(responseKey);
+                }, 1500);
+            }
+            
+            // Resposta rápida pelos botões
+            window.quickResponse = function(responseKey) {
+                addMessage(getQuestionFromKey(responseKey), 'user');
+                showTyping();
+                
+                setTimeout(function() {
+                    hideTyping();
+                    sendBotResponse(responseKey);
+                }, 800);
+            };
+            
+            // Envia resposta do bot
+            function sendBotResponse(responseKey) {
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'message bot-message';
+                responseDiv.innerHTML = responses[responseKey] || responses.default;
+                
+                const signature = document.createElement('div');
+                signature.className = 'signature';
+                signature.textContent = '— Kevin Hacker';
+                responseDiv.appendChild(signature);
+                
+                if (!responseKey.includes('contato')) {
+                    const warning = document.createElement('div');
+                    warning.className = 'warning-box';
+                    warning.innerHTML = '<strong>Lembre-se:</strong> O jogo Aviator é viciante. Respeite sempre a proteção e não seja ganancioso.';
+                    responseDiv.appendChild(warning);
+                }
+                
+                chatMessages.appendChild(responseDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Opções de contato
+            function sendContactOptions() {
+                const contactDiv = document.createElement('div');
+                contactDiv.className = 'message bot-message';
+                contactDiv.innerHTML = 'Você pode entrar em contato diretamente com o administrador:';
+                
+                const whatsappBtn = document.createElement('a');
+                whatsappBtn.href = 'https://wa.me/258833152264';
+                whatsappBtn.className = 'contact-button whatsapp-btn';
+                whatsappBtn.target = '_blank';
+                whatsappBtn.innerHTML = '<i class="fab fa-whatsapp"></i> WhatsApp: +258 83 315 2264';
+                
+                const callBtn = document.createElement('a');
+                callBtn.href = 'tel:+258860534652';
+                callBtn.className = 'contact-button call-btn';
+                callBtn.innerHTML = '<i class="fas fa-phone"></i> Ligar: +258 86 053 4652';
+                
+                contactDiv.appendChild(document.createElement('br'));
+                contactDiv.appendChild(whatsappBtn);
+                contactDiv.appendChild(callBtn);
+                
+                const signature = document.createElement('div');
+                signature.className = 'signature';
+                signature.textContent = '— Kevin Hacker';
+                contactDiv.appendChild(signature);
+                
+                chatMessages.appendChild(contactDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Adiciona mensagem ao chat
+            function addMessage(text, sender) {
+                const message = document.createElement('div');
+                message.className = `message ${sender}-message`;
+                message.textContent = text;
+                chatMessages.appendChild(message);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Mostra indicador de digitação
+            function showTyping() {
+                typingIndicator.style.display = 'block';
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Esconde indicador de digitação
+            function hideTyping() {
+                typingIndicator.style.display = 'none';
+            }
+            
+            // Mapeia chaves para perguntas
+            function getQuestionFromKey(key) {
+                const questions = {
+                    'criar conta': 'Como criar uma conta?',
+                    'key ativacao': 'Como obter uma key de ativação?',
+                    'precos': 'Quais são os preços das keys?',
+                    'funcionamento': 'Como funciona o ÁGUIA 002?'
+                };
+                return questions[key] || 'Pergunta sobre o ÁGUIA 002';
+            }
+            
+            // Event listeners
+            sendButton.addEventListener('click', sendMessage);
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') sendMessage();
+            });
+        });
+    </script>
+</body>
+</html>
